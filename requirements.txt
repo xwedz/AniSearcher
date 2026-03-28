@@ -1,4 +1,4 @@
-fastapi
-uvicorn
+fastapi[standard]
+uvicorn[standard]
 requests
 zhconv
