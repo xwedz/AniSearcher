@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.log
+AniSearcherV1.py
+fetch_anime.py
+secure_anime_api.py
+.venv/
+venv/
+env/
