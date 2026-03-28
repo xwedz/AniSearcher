@@ -6,14 +6,28 @@ import uvicorn
 import urllib.parse
 import time
 import zhconv
-
+import os
 app = FastAPI(title="Portfolio Anime Search (Jikan Edition)", description="符合 ToS 規範的動漫搜尋展示作品")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# [路徑防呆機制] 獲取目前程式檔案所在的絕對路徑
+# os.path.dirname(__file__) 會抓到 portfolio_api.py 所在的資料夾 (例如 /opt/render/project/src)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+# 使用絕對路徑掛載 static 資料夾
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/")
 def read_root():
-    return FileResponse('static/index.html')
+    # 使用絕對路徑回傳 index.html
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    
+    # 加上一個小小的防呆檢查，如果連絕對路徑都找不到，會在終端機印出錯誤幫助我們除錯
+    if not os.path.exists(index_path):
+        print(f"❌ 嚴重錯誤：找不到靜態檔案！預期路徑為: {index_path}")
+        return {"error": "找不到前端網頁檔案"}
+        
+    return FileResponse(index_path)
 
 # =====================================================================
 # 🌟 [在地化字典] 保留之前的標籤翻譯查表
