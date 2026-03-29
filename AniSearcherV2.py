@@ -29,9 +29,7 @@ def read_root():
         
     return FileResponse(index_path)
 
-# =====================================================================
-# 🌟 [在地化字典] 保留之前的標籤翻譯查表
-# =====================================================================
+# [在地化字典] 保留之前的標籤翻譯查表
 TAG_TRANSLATIONS = {
     # Genres (類型)
     "Action": "動作", "Adventure": "冒險", "Comedy": "喜劇", "Drama": "劇情",
@@ -72,9 +70,8 @@ def translate_tags(tag_list):
             translated_list.append(tag)
     return translated_list
 
-# =====================================================================
-# 🌟 [輔助引擎] Bangumi 名稱彈藥庫 (保留強大的繁簡容錯機制)
-# =====================================================================
+
+# [輔助引擎] Bangumi 名稱/別名庫 (保留強大的繁簡容錯機制)
 def get_names_from_bangumi(keyword: str) -> list:
     simplified_keyword = zhconv.convert(keyword, 'zh-cn')
     search_url = f"https://api.bgm.tv/search/subject/{urllib.parse.quote(simplified_keyword)}"
@@ -113,9 +110,8 @@ def get_names_from_bangumi(keyword: str) -> list:
     except Exception:
         return [keyword]
 
-# =====================================================================
-# 🌟 [主架構] 搜尋功能 (改用 Jikan API，但維持相同的 JSON 輸出格式)
-# =====================================================================
+
+# [主架構] 搜尋功能 (改用 Jikan API，但維持相同的 JSON 輸出格式)
 @app.get("/api/search")
 def search_anime_public(keyword: str):
     name_candidates = get_names_from_bangumi(keyword)
@@ -129,7 +125,7 @@ def search_anime_public(keyword: str):
         
         try:
             response = requests.get(target_url, timeout=5)
-            # 🌟 [重要] Jikan 有嚴格的 Rate Limit，必須 sleep 保護
+            # [重要] Jikan 有嚴格的 Rate Limit，必須 sleep 保護
             time.sleep(0.5) 
             
             if response.status_code == 200:
@@ -138,7 +134,7 @@ def search_anime_public(keyword: str):
                     print(f"✅ Jikan 命中！找到 {len(data['data'])} 筆結果。")
                     
                     for item in data["data"]:
-                        # 🌟 [BFF 模式] 將 Jikan 的資料，包裝成前端原本認識的樣子
+                        # [BFF 模式] 將 Jikan 的資料，包裝成前端原本認識的樣子
                         search_results.append({
                             "title": item.get("title", "未知"),      
                             # 將 Jikan 的 mal_id 偽裝成 slug 傳給前端
@@ -154,7 +150,7 @@ def search_anime_public(keyword: str):
     return {"status": "success", "total_found": 0, "results": []}
 
 # =====================================================================
-# 🌟 [主架構] 詳細資料功能 (改用 Jikan API)
+# [主架構] 詳細資料功能 (改用 Jikan API)
 # =====================================================================
 @app.get("/api/details/{slug}")
 def get_anime_details_public(slug: str):
@@ -181,7 +177,7 @@ def get_anime_details_public(slug: str):
         themes = [t["name"] for t in item.get("themes", [])]
         alt_titles = [t["title"] for t in item.get("titles", []) if t.get("type") in ["Japanese", "Synonym"]]
         
-        # 🌟 [新增] 解析季節與年份 (Season & Year)
+        # [新增] 解析季節與年份 (Season & Year)
         SEASON_MAP = {"spring": "春季", "summer": "夏季", "fall": "秋季", "winter": "冬季"}
         raw_season = item.get("season")
         raw_year = item.get("year")
@@ -189,7 +185,7 @@ def get_anime_details_public(slug: str):
         year_str = str(raw_year) if raw_year else "未知"
         season_year = f"{year_str} {season_str}".strip()
 
-        # 🌟 [新增] 解析播出狀態 (Status)
+        # [新增] 解析播出狀態 (Status)
         STATUS_MAP = {
             "Finished Airing": "已完結",
             "Currently Airing": "連載中",
@@ -198,14 +194,14 @@ def get_anime_details_public(slug: str):
         raw_status = item.get("status", "")
         status = STATUS_MAP.get(raw_status, raw_status)
 
-        # 🌟 [新增] 解析評分 (Score) 與集數 (Episodes)
+        # [新增] 解析評分 (Score) 與集數 (Episodes)
         score = item.get("score")
         score_str = f"{score} / 10" if score else "暫無評分"
         
         episodes = item.get("episodes")
         episodes_str = f"{episodes} 集" if episodes else "未知"
 
-        # 🌟 [BFF 模式] 組裝成強化版的 clean_info 格式
+        # [BFF 模式] 組裝成強化版的 clean_info 格式
         clean_info = {
             "title": item.get("title", "未知"),
             "season_year": season_year,  # 替換掉原本單純的 year
