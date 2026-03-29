@@ -64,7 +64,7 @@
 
 4. **啟動伺服器**
    \`\`\`bash
-   uvicorn portfolio_api:app --host 127.0.0.1 --port 8000 --reload
+   uvicorn AniSearcherV2:app --host 127.0.0.1 --port 8000 --reload
    \`\`\`
 
 5. **開啟瀏覽器**
