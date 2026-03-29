@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AniSearcher</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="has-background-light">
+<body>
+    <!-- ── HERO ── -->
     <section class="hero is-info is-small">
         <div class="hero-body">
             <div class="container has-text-centered">
                 <p class="title">
-                    📚 AniSearcher
+                    <span class="shimmer">📚 AniSearcher</span>
                 </p>
                 <p class="subtitle">
                     搜尋你喜愛的動畫
@@ -19,7 +21,8 @@
             </div>
         </div>
     </section>
-
+ 
+    <!-- ── SEARCH ── -->
     <section class="section">
         <div class="container">
             <div class="box">
@@ -34,7 +37,8 @@
                     </div>
                 </div>
             </div>
-
+ 
+            <!-- ── RESULTS ── -->
             <div class="box">
                 <p class="subtitle has-text-centered">搜尋結果</p>
                 <div class="columns is-multiline" id="search-results">
@@ -45,7 +49,8 @@
             </div>
         </div>
     </section>
-
+ 
+    <!-- ── MODAL ── -->
     <div class="modal" id="details-modal">
         <div class="modal-background" id="modal-bg"></div>
         <div class="modal-card">
@@ -54,15 +59,19 @@
                 <button class="delete" aria-label="close" id="modal-close-btn"></button>
             </header>
             <section class="modal-card-body">
-                <div id="modal-content" class="content is-medium">
-                </div>
+                <div id="modal-content" class="content is-medium"></div>
             </section>
             <footer class="modal-card-foot">
                 <button class="button is-info" id="modal-ok-btn">關閉視窗</button>
             </footer>
         </div>
     </div>
-
+ 
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+        AniSearcher &nbsp;·&nbsp; Powered by Jikan API &nbsp;·&nbsp; Built with FastAPI
+    </footer>
+ 
     <script src="/static/app.js"></script>
 </body>
 </html>
