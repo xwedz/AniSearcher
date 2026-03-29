@@ -46,7 +46,7 @@
 
 1. **複製專案庫**
    \`\`\`bash
-   git clone https://github.com/您的帳號/AniSearcher.git
+   git clone https://github.com/xwedz/AniSearcher.git
    cd AniSearcher
    \`\`\`
 
