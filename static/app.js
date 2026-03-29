@@ -116,7 +116,6 @@ document.getElementById('search-btn').addEventListener('click', function() {
                                 <div class="media">
                                     <div class="media-content">
                                         <p class="title is-5">${anime.title}</p>
-                                        <p class="subtitle is-6">年份: ${anime.year}</p>
                                     </div>
                                 </div>
                                 <div class="content has-text-centered">
