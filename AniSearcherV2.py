@@ -224,4 +224,4 @@ if __name__ == "__main__":
     log_config["loggers"]["uvicorn"]["handlers"].append("file")
     log_config["loggers"]["uvicorn.access"]["handlers"].append("file")
 
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_config=log_config)
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_config=log_config)
