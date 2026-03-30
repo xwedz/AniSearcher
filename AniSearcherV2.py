@@ -7,10 +7,10 @@ import urllib.parse
 import time
 import zhconv
 import os
-app = FastAPI(title="Portfolio Anime Search (Jikan Edition)", description="符合 ToS 規範的動漫搜尋展示作品")
+app = FastAPI(title="AniSearcherV2 (Jikan Edition)", description="針對繁體中文優化的動漫搜尋引擎")
 
-# [路徑防呆機制] 獲取目前程式檔案所在的絕對路徑
-# os.path.dirname(__file__) 會抓到 portfolio_api.py 所在的資料夾 (例如 /opt/render/project/src)
+# 獲取目前程式檔案所在的絕對路徑
+# os.path.dirname(__file__) 會抓到 AniSearcher.py 所在的資料夾 (例如 /opt/render/project/src)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 
@@ -22,22 +22,22 @@ def read_root():
     # 使用絕對路徑回傳 index.html
     index_path = os.path.join(STATIC_DIR, "index.html")
     
-    # 加上一個小小的防呆檢查，如果連絕對路徑都找不到，會在終端機印出錯誤幫助我們除錯
+    # 如果連絕對路徑都找不到，會在終端機印出錯誤幫助我們除錯
     if not os.path.exists(index_path):
         print(f"❌ 嚴重錯誤：找不到靜態檔案！預期路徑為: {index_path}")
         return {"error": "找不到前端網頁檔案"}
         
     return FileResponse(index_path)
 
-# [在地化字典] 保留之前的標籤翻譯查表
+# [在地化字典] 
 TAG_TRANSLATIONS = {
-    # Genres (類型)
+    # Genres 
     "Action": "動作", "Adventure": "冒險", "Comedy": "喜劇", "Drama": "劇情",
     "Fantasy": "奇幻", "Romance": "戀愛", "Sci-Fi": "科幻", "Slice of Life": "日常",
     "Psychological": "心理", "Mystery": "懸疑", "Horror": "恐怖", "Sports": "運動",
     "Supernatural": "超自然","Award Winning": "得獎作品", "Ecchi": "色情",
     
-    # Tags (標籤)
+    # Tags 
     "Tragedy": "悲劇", "Magic": "魔法", "School": "校園", "Time Manipulation": "穿越",
     "Philosophy": "哲學", "Coming of Age": "成長", "Male Protagonist": "男主角", 
     "Female Protagonist": "女主角", "Kuudere": "無口/三無", "Tsundere": "傲嬌",
@@ -71,7 +71,7 @@ def translate_tags(tag_list):
     return translated_list
 
 
-# [輔助引擎] Bangumi 名稱/別名庫 (保留強大的繁簡容錯機制)
+# Bangumi 名稱/別名庫 
 def get_names_from_bangumi(keyword: str) -> list:
     simplified_keyword = zhconv.convert(keyword, 'zh-cn')
     search_url = f"https://api.bgm.tv/search/subject/{urllib.parse.quote(simplified_keyword)}"
@@ -111,7 +111,7 @@ def get_names_from_bangumi(keyword: str) -> list:
         return [keyword]
 
 
-# [主架構] 搜尋功能 (改用 Jikan API，但維持相同的 JSON 輸出格式)
+# 搜尋功能 (使用Jikan API，JSON 輸出格式)
 @app.get("/api/search")
 def search_anime_public(keyword: str):
     name_candidates = get_names_from_bangumi(keyword)
@@ -125,7 +125,7 @@ def search_anime_public(keyword: str):
         
         try:
             response = requests.get(target_url, timeout=5)
-            # [重要] Jikan 有嚴格的 Rate Limit，必須 sleep 保護
+            # 為符合Jikan API Rate Limit，使用 sleep 
             time.sleep(0.5) 
             
             if response.status_code == 200:
@@ -134,10 +134,10 @@ def search_anime_public(keyword: str):
                     print(f"✅ Jikan 命中！找到 {len(data['data'])} 筆結果。")
                     
                     for item in data["data"]:
-                        # [BFF 模式] 將 Jikan 的資料，包裝成前端原本認識的樣子
+                        # 將 Jikan 的資料，包裝成前端原本認識的樣子
                         search_results.append({
                             "title": item.get("title", "未知"),      
-                            # 將 Jikan 的 mal_id 偽裝成 slug 傳給前端
+                            # 將 Jikan 的 mal_id 當成 slug
                             "slug": str(item.get("mal_id")),
                             "year": item.get("year", "未知") if item.get("year") else "未知",
                             "cover_image": item["images"]["jpg"]["large_image_url"] if "images" in item else ""
@@ -149,13 +149,10 @@ def search_anime_public(keyword: str):
             
     return {"status": "success", "total_found": 0, "results": []}
 
-# =====================================================================
-# [主架構] 詳細資料功能 (改用 Jikan API)
-# =====================================================================
+# 詳細資料功能 
 @app.get("/api/details/{slug}")
 def get_anime_details_public(slug: str):
     
-    # 這裡的 slug 其實是前面傳過來的 mal_id
     target_url = f"https://api.jikan.moe/v4/anime/{slug}"
     
     try:
@@ -169,7 +166,7 @@ def get_anime_details_public(slug: str):
         if not item:
             raise HTTPException(status_code=404, detail="❓ 找不到資料")
             
-# 解析 Jikan 獨特的資料結構
+        #找出各種資訊
         studios = [s["name"] for s in item.get("studios", [])]
         studio_name = studios[0] if studios else "未知"
         
@@ -177,7 +174,6 @@ def get_anime_details_public(slug: str):
         themes = [t["name"] for t in item.get("themes", [])]
         alt_titles = [t["title"] for t in item.get("titles", []) if t.get("type") in ["Japanese", "Synonym"]]
         
-        # [新增] 解析季節與年份 (Season & Year)
         SEASON_MAP = {"spring": "春季", "summer": "夏季", "fall": "秋季", "winter": "冬季"}
         raw_season = item.get("season")
         raw_year = item.get("year")
@@ -185,7 +181,6 @@ def get_anime_details_public(slug: str):
         year_str = str(raw_year) if raw_year else "未知"
         season_year = f"{year_str} {season_str}".strip()
 
-        # [新增] 解析播出狀態 (Status)
         STATUS_MAP = {
             "Finished Airing": "已完結",
             "Currently Airing": "連載中",
@@ -194,20 +189,18 @@ def get_anime_details_public(slug: str):
         raw_status = item.get("status", "")
         status = STATUS_MAP.get(raw_status, raw_status)
 
-        # [新增] 解析評分 (Score) 與集數 (Episodes)
         score = item.get("score")
         score_str = f"{score} / 10" if score else "暫無評分"
         
         episodes = item.get("episodes")
         episodes_str = f"{episodes} 集" if episodes else "未知"
 
-        # [BFF 模式] 組裝成強化版的 clean_info 格式
         clean_info = {
             "title": item.get("title", "未知"),
-            "season_year": season_year,  # 替換掉原本單純的 year
-            "status": status,            # 新增
-            "score": score_str,          # 新增
-            "episodes": episodes_str,    # 新增
+            "season_year": season_year,  
+            "status": status,            
+            "score": score_str,          
+            "episodes": episodes_str,    
             "studio": studio_name,
             "genres": translate_tags(genres),
             "main_tags": translate_tags(themes),

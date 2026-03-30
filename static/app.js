@@ -70,16 +70,10 @@ window.fetchDetails = function(slug) {
         })
 };
 
-// ==========================================
-// 下面是原本的搜尋功能，只有修改了按鈕的 onclick
-// ==========================================
 // [UX 優化] 監聽搜尋輸入框的鍵盤事件
 document.getElementById('search-keyword').addEventListener('keypress', function(event) {
-    // 判斷按下的鍵是不是 Enter (鍵盤代碼為 'Enter')
     if (event.key === 'Enter') {
-        // 阻止預設行為（防止表單送出重新整理網頁）
         event.preventDefault();
-        // 模擬使用者用滑鼠點擊了「搜尋按鈕」
         document.getElementById('search-btn').click();
     }
 });
