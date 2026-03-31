@@ -24,8 +24,7 @@
 * **資料解耦：** 採用 Backend For Frontend 模式。後端負責複雜的資料庫請求、限速保護 (Rate Limiting) 以及巢狀 JSON 的重組與翻譯 (如：將英文的播出狀態與季節在地化為中文)。
 * **API 合規：** 系統底層資料源完全遵循服務條款 (ToS)，使用官方開源的 Jikan API v4，確保正式上線的合法性與穩定性。前端僅接收處理完畢的乾淨 JSON，達到完美的前後端分離。
 
-### 4. CI/CD 與雲端原生部署 (Cloud-Native Deployment)
-* **版本控制與隔離：** 使用 Git 進行版本控制，並透過 `.gitignore` 嚴格隔離本地虛擬環境 (`.venv`) 與系統日誌，確保程式碼庫的純淨。
+### 4.雲端原生部署 (Cloud-Native Deployment)
 * **自動化上線：** 專案已與 GitHub 整合，並成功部署至 **Render** 雲端平台 (PaaS)。配置了專屬的 `requirements.txt` (包含 `uvicorn[standard]` 等底層依賴) 與啟動指令，實現全自動化建置與 HTTPS 安全憑證核發。
 
 ---
