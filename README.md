@@ -1,4 +1,4 @@
-# 🎌 AniSearcher - 動漫資訊雙引擎代理系統
+# 🎌 AniSearcher - 繁體中文動畫搜尋系統
 
 [![Deploy Status](https://img.shields.io/badge/Deploy-Render-success?style=for-the-badge&logo=render)](你的Render網址)
 [![Python Version](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python)]()
