@@ -12,6 +12,12 @@ modalBg.addEventListener('click', closeModal);
 modalCloseBtn.addEventListener('click', closeModal);
 modalOkBtn.addEventListener('click', closeModal);
 
+function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(String(str)));
+    return div.innerHTML;
+}
+
 // 🌟 新增功能：根據 ID (slug) 取得詳細資料並打開視窗
 window.fetchDetails = function(slug) {
     // 1. 先打開視窗，並顯示載入中
@@ -30,26 +36,26 @@ window.fetchDetails = function(slug) {
             modalTitle.innerText = info.title;
             
             // 處理標籤陣列
-            const genresTags = info.genres.map(g => `<span class="tag is-primary is-light">${g}</span>`).join(' ');
-            const mainTags = info.main_tags.map(t => `<span class="tag is-danger is-light">${t}</span>`).join(' ');
-            const altTitlesList = info.alt_titles.map(title => `<li>${title}</li>`).join('');
+            const genresTags = info.genres.map(g => `<span class="tag is-primary is-light">${escapeHTML(g)}</span>`).join(' ');
+            const mainTags = info.main_tags.map(t => `<span class="tag is-danger is-light">${escapeHTML(t)}</span>`).join(' ');
+            const altTitlesList = info.alt_titles.map(title => `<li>${escapeHTML(title)}</li>`).join('');
 
             // 動態生成 HTML 內容 (加入新欄位並優化排版)
             modalContent.innerHTML = `
                 <div class="content is-medium">
                     <p>
-                        <strong>📅 播出時間：</strong> ${info.season_year} 
+                        <strong>📅 播出時間：</strong> ${escapeHTML(info.season_year)} 
                         &nbsp;&nbsp;&nbsp; 
-                        <strong>📺 狀態：</strong> <span class="tag is-info is-light">${info.status}</span>
+                        <strong>📺 狀態：</strong> <span class="tag is-info is-light">${escapeHTML(info.status)}</span>
                     </p>
                     
                     <p>
-                        <strong>⭐ 觀眾評分：</strong> <strong class="has-text-warning-dark">${info.score}</strong> 
+                        <strong>⭐ 觀眾評分：</strong> <strong class="has-text-warning-dark">${escapeHTML(info.score)}</strong> 
                         &nbsp;&nbsp;&nbsp; 
-                        <strong>📼 總集數：</strong> ${info.episodes}
+                        <strong>📼 總集數：</strong> ${escapeHTML(info.episodes)}
                     </p>
                     
-                    <p><strong>🏢 製作公司：</strong> ${info.studio}</p>
+                    <p><strong>🏢 製作公司：</strong> ${escapeHTML(info.studio)}</p>
                 </div>
                 
                 <p><strong>🏷️ 動畫類型 (Genre)：</strong></p>
@@ -103,17 +109,17 @@ document.getElementById('search-btn').addEventListener('click', function() {
                         <div class="card">
                             <div class="card-image">
                                 <figure class="image is-4by3">
-                                    <img src="${anime.cover_image || 'https://via.placeholder.com/400x300'}" alt="${anime.title}" style="object-fit: cover;">
+                                    <img src="${anime.cover_image || 'https://via.placeholder.com/400x300'}" alt="${escapeHTML(anime.title)}" style="object-fit: cover;">
                                 </figure>
                             </div>
                             <div class="card-content">
                                 <div class="media">
                                     <div class="media-content">
-                                        <p class="title is-5">${anime.title}</p>
+                                        <p class="title is-5">${escapeHTML(anime.title)}</p>
                                     </div>
                                 </div>
                                 <div class="content has-text-centered">
-                                    <button class="button is-info is-small is-outlined is-fullwidth" onclick="fetchDetails('${anime.slug}')">
+                                    <button class="button is-info is-small is-outlined is-fullwidth" onclick="fetchDetails('${escapeHTML(anime.slug)}')">
                                         📖 查看詳細資料
                                     </button>
                                 </div>
