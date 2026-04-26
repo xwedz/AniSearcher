@@ -4,7 +4,7 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python)]()
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-00a393?style=for-the-badge&logo=fastapi)]()
 
-這是一個基於 **FastAPI** 打造的現代化微服務 API 代理 (Proxy) 與資料聚合系統。本專案採用 **BFF (Backend For Frontend)** 架構，旨在解決跨語系動漫資訊檢索的痛點，並實作了高可用性的第三方 API 容錯與備援機制。
+這是一個基於 **FastAPI** 打造的 API 代理 (Proxy) 。本專案採用 **BFF (Backend For Frontend)** 架構，旨在解決跨語系動漫資訊檢索的痛點，並實作了高可用性的第三方 API 容錯與備援機制。
 
 線上使用: https://anisearcher.onrender.com
 
