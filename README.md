@@ -3,7 +3,7 @@
 [![Python Version](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python)]()
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-00a393?style=for-the-badge&logo=fastapi)]()
 
-AniSearcher 是一個動漫資訊搜尋代理 API。主要解決主流英文動漫資料庫難以用中文精準搜尋的問題。透過整合多方 API 並處理繁簡體轉換，提供一個乾淨、穩定且支援中文輸入的前端搜尋體驗。
+AniSearcher 讓你可以利用繁體中文，方便快速的搜尋到各種動畫(及相關作品)的資料，馬上試著用AniSearcher搜索各種動畫資料吧 ! 
 
 線上使用: https://anisearcher.onrender.com
 
@@ -22,9 +22,9 @@ AniSearcher 是一個動漫資訊搜尋代理 API。主要解決主流英文動�
 ## 🚀 Local Setup
 
 1. Clone 專案並建立虛擬環境：
-   `git clone https://github.com/xwedz/AniSearcher.git`
-   `cd AniSearcher`
-   `python -m venv .venv`
+   `git clone https://github.com/xwedz/AniSearcher.git`  
+   `cd AniSearcher`  
+   `python -m venv .venv`  
    `.venv\Scripts\activate`
 2. 安裝套件：
    `pip install -r requirements.txt`
