@@ -115,18 +115,37 @@ def get_names_from_bangumi(keyword: str) -> list:
 @app.get("/api/search")
 def search_anime_public(keyword: str):
     name_candidates = get_names_from_bangumi(keyword)
+    
+    # 💡 除錯點 1：確認前置作業有沒有拿到資料，如果沒拿到，至少用原本的 keyword 搜一次
+    print(f"🔍 準備搜尋，名單為：{name_candidates}")
+    if not name_candidates:
+        print("⚠️ 警告：get_names_from_bangumi 回傳為空，改用原始 keyword 搜尋")
+        name_candidates = [keyword]
+
     search_results = []
+    
+    # 💡 加上 User-Agent 偽裝成正常瀏覽器或表明身份
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/json"
+    }
+    
+    # 💡 Jikan API Endpoint
+    target_url = "https://api.tenrai.org/v1/anime"
     
     for candidate_name in name_candidates:
         print(f"🔄 嘗試使用 '{candidate_name}' 搜尋 Jikan API...")
-        safe_keyword = urllib.parse.quote(candidate_name)
-        # 呼叫 Jikan v4 API
-        target_url = f"https://api.jikan.moe/v4/anime?q={safe_keyword}&limit=6"
+        
+        # 💡 使用 requests 內建的 params，它會自動幫你做安全的 URL encode (取代手動 quote)
+        params = {
+            "q": candidate_name,
+            "limit": 6
+        }
         
         try:
-            response = requests.get(target_url, timeout=5)
-            # 為符合Jikan API Rate Limit，使用 sleep 
-            time.sleep(0.5) 
+            # 帶入 params 與 headers
+            response = requests.get(target_url, params=params, headers=headers, timeout=5)
+            time.sleep(0.5) # 符合 Rate Limit
             
             if response.status_code == 200:
                 data = response.json()
@@ -134,17 +153,20 @@ def search_anime_public(keyword: str):
                     print(f"✅ Jikan 命中！找到 {len(data['data'])} 筆結果。")
                     
                     for item in data["data"]:
-                        # 將 Jikan 的資料，包裝成前端原本認識的樣子
                         search_results.append({
                             "title": item.get("title", "未知"),      
-                            # 將 Jikan 的 mal_id 當成 slug
                             "slug": str(item.get("mal_id")),
                             "year": item.get("year", "未知") if item.get("year") else "未知",
                             "cover_image": item["images"]["jpg"]["large_image_url"] if "images" in item else ""
                         })
-                    
                     return {"status": "success", "total_found": len(search_results), "results": search_results}
-        except requests.exceptions.RequestException:
+            else:
+                # 💡 除錯點 2：把非 200 的狀態碼印出來，你才會知道是被擋了還是 API 壞了
+                print(f"❌ Jikan API 錯誤: HTTP {response.status_code}, 內容: {response.text}")
+                
+        except requests.exceptions.RequestException as e:
+            # 💡 把 Timeout 或連線錯誤的原因印出來
+            print(f"⚠️ 請求發生異常: {e}")
             continue
             
     return {"status": "success", "total_found": 0, "results": []}
@@ -153,7 +175,7 @@ def search_anime_public(keyword: str):
 @app.get("/api/details/{slug}")
 def get_anime_details_public(slug: str):
     
-    target_url = f"https://api.jikan.moe/v4/anime/{slug}"
+    target_url = f"https://api.tenrai.org/v1/anime/{slug}"
     
     try:
         response = requests.get(target_url, timeout=5)
