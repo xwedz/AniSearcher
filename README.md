@@ -21,7 +21,7 @@ AniSearcher 讓你可以利用繁體中文，方便快速的搜尋到各種動�
 
 ## 🚀 Local Setup
 
-1. Clone 專案並建立虛擬環境：
+1. Clone 專案並建立虛擬環境：  
    `git clone https://github.com/xwedz/AniSearcher.git`  
    `cd AniSearcher`  
    `python -m venv .venv`  
