@@ -1,11 +1,11 @@
 # AniSearcher
-[![Deploy Status](https://img.shields.io/badge/Deploy-Render-success?style=for-the-badge&logo=render)](https://anisearcher.onrender.com)
+[![Deploy Status](https://img.shields.io/badge/Deploy-Render-success?style=for-the-badge&logo=render)](https://anisearcher.xwedz.dev)
 [![Python Version](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python)]()
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-00a393?style=for-the-badge&logo=fastapi)]()
 
 AniSearcher 讓你可以利用繁體中文，方便快速的搜尋到各種動畫(及相關作品)的資料，馬上試著用AniSearcher搜索各種動畫資料吧 ! 
 
-線上使用: https://anisearcher.onrender.com
+線上使用: https://anisearcher.xwedz.dev
 
 ## 🌟 Features
 
